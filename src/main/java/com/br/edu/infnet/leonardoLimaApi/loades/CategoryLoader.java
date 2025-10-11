@@ -1,17 +1,18 @@
 package com.br.edu.infnet.leonardoLimaApi.loades;
 
 import com.br.edu.infnet.leonardoLimaApi.dtos.CategoryDTO;
-import com.br.edu.infnet.leonardoLimaApi.entities.Category;
 import com.br.edu.infnet.leonardoLimaApi.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 
+@Order(1)
 @Component
 public class CategoryLoader implements ApplicationRunner {
 
@@ -37,10 +38,10 @@ public class CategoryLoader implements ApplicationRunner {
         while (linha != null) {
             campos = linha.split(";");
 
-            Category category = new Category();
-            category.setName(campos[0]);
-            category.setInActive(Boolean.parseBoolean(campos[1]));
-            service.insert(new CategoryDTO(category));
+            CategoryDTO categoryDto = new CategoryDTO();
+            categoryDto.setName(campos[0]);
+            categoryDto.setInActive(Boolean.parseBoolean(campos[1]));
+            service.insert(categoryDto);
 
             linha = leitura.readLine();
         }

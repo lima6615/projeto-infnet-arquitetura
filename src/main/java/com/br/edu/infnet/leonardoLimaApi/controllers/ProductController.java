@@ -25,6 +25,11 @@ public class ProductController {
         return ResponseEntity.ok().body(service.findAll());
     }
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(service.findById(id));
+    }
+
     @PostMapping
     public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.insert(dto));

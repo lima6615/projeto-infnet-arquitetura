@@ -41,6 +41,7 @@ public class ProductLoader implements ApplicationRunner {
             dto.setDescription(campos[1]);
             dto.setPrice(Double.parseDouble(campos[2]));
             dto.setInActive(Boolean.parseBoolean(campos[3]));
+            dto.setCategoryId(Long.parseLong(campos[4]));
             service.insert(dto);
 
             linha = leitura.readLine();

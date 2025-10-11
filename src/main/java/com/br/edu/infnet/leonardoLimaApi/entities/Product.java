@@ -16,4 +16,5 @@ public class Product {
     private String description;
     private Double price;
     private Boolean inActive;
+    private Category category = new Category();
 }

@@ -3,11 +3,13 @@ package com.br.edu.infnet.leonardoLimaApi.services.interfaces;
 import java.util.List;
 
 /*
-*   D -> DTO
-*   ID -> Long
-*/
+ *   D -> DTO
+ *   ID -> Long
+ */
 public interface CrudService<D, ID> {
     List<D> findAll();
+
+    D findById(ID id);
 
     D insert(D entity);
 
