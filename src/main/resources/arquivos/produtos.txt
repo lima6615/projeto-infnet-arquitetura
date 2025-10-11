@@ -1,0 +1,10 @@
+Smartphone;Celular moderno com câmera de alta resolução;2500.00;True
+Notebook;Notebook leve e potente para uso diário;4200.00;True
+Fone de Ouvido Bluetooth;Fone sem fio com cancelamento de ruído;350.00;True
+Camiseta;Camiseta de algodão confortável;80.00;True
+Calça Jeans;Calça jeans azul tradicional;150.00;True
+Perfume;Perfume importado de longa duração;300.00;True
+Liquidificador;Liquidificador potente com 5 velocidades;220.00;True
+Bicicleta;Bicicleta de alumínio para trilhas;1800.00;True
+Romance;Livro de romance contemporâneo;45.00;True
+Lego;Brinquedo de montar educativo;250.00;True

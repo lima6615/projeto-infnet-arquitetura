@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class LeonardoLimaApiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(LeonardoLimaApiApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(LeonardoLimaApiApplication.class, args);
+    }
 }

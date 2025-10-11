@@ -1,0 +1,7 @@
+Eletrônicos;true
+Moda;true
+Beleza;true
+Casa e Cozinha;true
+Esportes;true
+Livros;true
+Brinquedos;true
