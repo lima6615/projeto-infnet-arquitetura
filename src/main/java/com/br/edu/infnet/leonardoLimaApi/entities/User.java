@@ -9,12 +9,12 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class Product {
+public abstract class User {
 
     private Long id;
     private String name;
-    private String description;
-    private Double price;
-    private Boolean inActive;
-    private Category category;
+    private String email;
+    private String password;
+    private Boolean inAtivo;
+    private String phone;
 }

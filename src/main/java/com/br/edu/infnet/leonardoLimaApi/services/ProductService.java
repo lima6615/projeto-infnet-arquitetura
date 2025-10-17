@@ -73,7 +73,7 @@ public class ProductService implements CrudService<ProductDTO, Long> {
         CategoryDTO categoryDto = categoryService.findById(productDto.getCategoryId());
 
         Product product = null;
-        if(Objects.nonNull(categoryService.findById(dto.getCategoryId()))) {
+        if (Objects.nonNull(categoryService.findById(dto.getCategoryId()))) {
             if (Objects.nonNull(categoryDto)) {
                 products.remove(productDto.getId());
                 product = productMapper.dtoToEntity(dto);

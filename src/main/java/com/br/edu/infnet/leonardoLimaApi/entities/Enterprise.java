@@ -9,12 +9,9 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class Product {
+public class Enterprise extends User {
 
-    private Long id;
-    private String name;
-    private String description;
-    private Double price;
-    private Boolean inActive;
-    private Category category;
+    private String photo;
+    private String fantasy;
+    private String cnpj;
 }

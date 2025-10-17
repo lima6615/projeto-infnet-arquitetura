@@ -1,0 +1,3 @@
+ShopNow LTDA;contato@shopnow.com;shop2025;True;1133557799;12398765000155
+MegaStore Online;suporte@megastore.com;mega@2025;True;21987654321;98732145000144
+ClickCompras SA;info@clickcompras.com;click123;False;31965432100;45678945000122
