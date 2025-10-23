@@ -49,7 +49,7 @@ public class ClientLoader implements ApplicationRunner {
             addressDto.setCep(campos[6]);
             clienteDto.setAddress(addressDto);
 
-            clientService.insert(clienteDto);
+            clientService.createClientAndAddress(clienteDto, false);
             linha = leitura.readLine();
         }
 

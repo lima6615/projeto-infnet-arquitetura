@@ -26,13 +26,16 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<ClientDTO> insert(@RequestBody ClientDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.insert(dto));
+    public ResponseEntity<ClientDTO> insert(@RequestParam(name = "update", defaultValue = "false") boolean update,
+                                            @RequestBody ClientDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createClientAndAddress(dto, update));
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ClientDTO> update(@PathVariable Long id, @RequestBody ClientDTO dto) {
-        return ResponseEntity.ok().body(service.update(id, dto));
+    public ResponseEntity<ClientDTO> update(@RequestParam(name = "update", defaultValue = "false") boolean update,
+                                            @PathVariable Long id,
+                                            @RequestBody ClientDTO dto) {
+        return ResponseEntity.ok().body(service.updateClientAndAddress(id, dto, update));
     }
 
     @DeleteMapping(value = "/{id}")

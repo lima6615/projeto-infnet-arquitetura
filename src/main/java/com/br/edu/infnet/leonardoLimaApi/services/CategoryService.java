@@ -3,80 +3,72 @@ package com.br.edu.infnet.leonardoLimaApi.services;
 import com.br.edu.infnet.leonardoLimaApi.dtos.CategoryDTO;
 import com.br.edu.infnet.leonardoLimaApi.entities.Category;
 import com.br.edu.infnet.leonardoLimaApi.mapper.CategotyMapper;
-import com.br.edu.infnet.leonardoLimaApi.mapper.ProductMapper;
+import com.br.edu.infnet.leonardoLimaApi.repositories.CategoryRepository;
+import com.br.edu.infnet.leonardoLimaApi.services.exceptions.DatabaseException;
+import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceAlreadyExistsException;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceNotFoundException;
 import com.br.edu.infnet.leonardoLimaApi.services.interfaces.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class CategoryService implements CrudService<CategoryDTO, Long> {
 
-    private Map<Long, Category> categories = new ConcurrentHashMap<>();
-    private AtomicLong index = new AtomicLong(1);
-
     private final CategotyMapper categotyMapper;
-    private final ProductMapper productMapper;
+    private final CategoryRepository repository;
 
     @Autowired
-    public CategoryService(CategotyMapper categotyMapper, ProductMapper productMapper) {
+    public CategoryService(CategotyMapper categotyMapper, CategoryRepository repository) {
         this.categotyMapper = categotyMapper;
-        this.productMapper = productMapper;
+        this.repository = repository;
     }
 
-
+    @Transactional(readOnly = true)
     @Override
     public List<CategoryDTO> findAll() {
-        return categories.values().stream().map(categotyMapper::entityToDto).toList();
+        return repository.findAll().stream().map(categotyMapper::entityToDto).toList();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public CategoryDTO findById(Long id) {
-        Category category = categories.get(id);
-        if (category != null) {
-            return categotyMapper.entityToDto(category);
-        }
-        throw new ResourceNotFoundException("Categoria com id " + id + " não encontrado.");
+        return categotyMapper.entityToDto(repository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Categoria com id " + id + " não encontrado.")));
     }
 
+    @Transactional
     @Override
     public CategoryDTO insert(CategoryDTO dto) {
         Category category = categotyMapper.dtoToEntity(dto);
-
-        if (Objects.isNull(dto.getId())) {
-            category.setId(index.getAndIncrement());
+        if (repository.findByName(dto.getName()).isEmpty()) {
+            repository.save(category);
         } else {
-            categories.remove(category.getId());
+            throw new ResourceAlreadyExistsException("Categoria com o nome = " + dto.getName() + " já cadastrada.");
         }
-        categories.put(category.getId(), category);
         return categotyMapper.entityToDto(category);
     }
 
+    @Transactional
     @Override
     public CategoryDTO update(Long id, CategoryDTO dto) {
-        CategoryDTO categoryDto = findById(id);
-        Category category = null;
-        if (categoryDto != null) {
-            categories.remove(categoryDto.getId());
-            category = categotyMapper.dtoToEntity(dto);
-            category.setId(id);
-            category.getProducts().addAll(categoryDto.getProducts().stream().map(productMapper::dtoToEntity).toList());
-            categories.put(categoryDto.getId(), category);
-        }
-        return categotyMapper.entityToDto(category);
+        this.findById(id);
+        Category category = categotyMapper.dtoToEntity(dto);
+        category.setId(id);
+        return categotyMapper.entityToDto(repository.save(category));
     }
 
+    @Transactional
     @Override
     public void delete(Long id) {
-        CategoryDTO categoryDto = findById(id);
-        if (categoryDto != null) {
-            categories.remove(id);
+        this.findById(id);
+        try {
+            repository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Violação de integridade no banco de dados");
         }
     }
 }

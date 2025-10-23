@@ -2,96 +2,107 @@ package com.br.edu.infnet.leonardoLimaApi.services;
 
 import com.br.edu.infnet.leonardoLimaApi.dtos.AddressDTO;
 import com.br.edu.infnet.leonardoLimaApi.dtos.ClientDTO;
+import com.br.edu.infnet.leonardoLimaApi.entities.Address;
 import com.br.edu.infnet.leonardoLimaApi.entities.Client;
 import com.br.edu.infnet.leonardoLimaApi.mapper.AddressMapper;
 import com.br.edu.infnet.leonardoLimaApi.mapper.ClientMapper;
+import com.br.edu.infnet.leonardoLimaApi.repositories.ClientRepository;
+import com.br.edu.infnet.leonardoLimaApi.services.exceptions.DatabaseException;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceNotFoundException;
 import com.br.edu.infnet.leonardoLimaApi.services.interfaces.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class ClientService implements CrudService<ClientDTO, Long> {
-
-    private Map<Long, Client> clients = new ConcurrentHashMap<>();
-    private AtomicLong index = new AtomicLong(1);
 
     private final BCryptPasswordEncoder encoder;
     private final ClientMapper clientMapper;
     private final AddressMapper addressMapper;
     private final AddressService addressService;
+    private final ClientRepository repository;
+
 
     @Autowired
-    public ClientService(BCryptPasswordEncoder encoder, ClientMapper clientMapper, AddressMapper addressMapper, AddressService addressService) {
+    public ClientService(BCryptPasswordEncoder encoder, ClientMapper clientMapper, AddressService addressService, ClientRepository repository, AddressMapper addressMapper) {
         this.encoder = encoder;
         this.clientMapper = clientMapper;
-        this.addressMapper = addressMapper;
         this.addressService = addressService;
+        this.repository = repository;
+        this.addressMapper = addressMapper;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ClientDTO> findAll() {
-        return clients.values().stream().map(clientMapper::entityToDto).toList();
+        return repository.findAll().stream().map(clientMapper::entityToDto).toList();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public ClientDTO findById(Long id) {
-        Client client = clients.get(id);
-        if (Objects.nonNull(client)) {
-            return clientMapper.entityToDto(client);
-        }
-        throw new ResourceNotFoundException("Cliente com id= " + id + " não encontrado.");
+        return clientMapper.entityToDto(repository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Cliente com id= " + id + " não encontrado.")));
     }
 
     @Override
-    public ClientDTO insert(ClientDTO dto) {
+    public ClientDTO insert(ClientDTO entity) {
+        return null;
+    }
+
+    @Override
+    public ClientDTO update(Long aLong, ClientDTO entity) {
+        return null;
+    }
+
+    @Transactional
+    public ClientDTO createClientAndAddress(ClientDTO dto, boolean update) {
         Client client = clientMapper.dtoToEntity(dto);
-        client.setId(index.getAndIncrement());
         client.setPassword(encoder.encode(dto.getPassword()));
-
-        AddressDTO addressDto = null;
-        if (Objects.nonNull(dto.getAddress())) {
-            addressDto = new AddressDTO();
-            addressDto.setClientId(client.getId());
-            addressDto.setCep(dto.getAddress().getCep());
-            addressDto = addressService.insert(addressDto);
-        }
-
-        client.setAddress(addressMapper.dtoToEntity(addressDto));
-        clients.put(client.getId(), client);
-        return clientMapper.entityToDto(client);
+        return clientMapper.entityToDto(repository.save(getAddressDTO(dto, client, update)));
     }
 
-    @Override
-    public ClientDTO update(Long id, ClientDTO dto) {
-        ClientDTO clientDto = findById(id);
-
-        Client client = null;
-        if (Objects.nonNull(clientDto)) {
-            clients.remove(id);
-            client = clientMapper.dtoToEntity(dto);
-            client.setId(id);
-            client.setPassword(encoder.encode(dto.getPassword()));
-
-            AddressDTO address = addressService.update(clientDto.getAddress().getId(), dto.getAddress());
-            client.setAddress(addressMapper.dtoToEntity(address));
-            clients.put(client.getId(), client);
-        }
-        return clientMapper.entityToDto(client);
+    @Transactional
+    public ClientDTO updateClientAndAddress(Long id, ClientDTO dto, boolean update) {
+        ClientDTO clientDTO = this.findById(id);
+        Client client = clientMapper.dtoToEntity(dto);
+        client.setPassword(encoder.encode(dto.getPassword()));
+        client.setId(id);
+        client.setAddress(addressMapper.dtoToEntity(clientDTO.getAddress()));
+        return clientMapper.entityToDto(repository.save(getAddressDTO(dto, client, update)));
     }
 
+    @Transactional
     @Override
     public void delete(Long id) {
-        ClientDTO clientDto = findById(id);
-        if (Objects.nonNull(clientDto)) {
-            clients.remove(id);
+        this.findById(id);
+        try {
+            repository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Violação de integridade no banco de dados");
         }
+    }
+
+    private Client getAddressDTO(ClientDTO dto, Client client, boolean update) {
+        if (Objects.nonNull(dto.getAddress().getCep())) {
+
+            AddressDTO addressDto = null;
+            if (update) {
+                addressDto = addressService.update(client.getAddress().getId(), dto.getAddress());
+            } else {
+                addressDto = addressService.insert(dto.getAddress());
+            }
+
+            Address address = addressMapper.dtoToEntity(addressDto);
+            client.setAddress(address);
+            address.setClient(client);
+        }
+        return client;
     }
 }

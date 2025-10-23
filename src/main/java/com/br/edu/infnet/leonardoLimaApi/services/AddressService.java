@@ -3,97 +3,86 @@ package com.br.edu.infnet.leonardoLimaApi.services;
 import com.br.edu.infnet.leonardoLimaApi.dtos.AddressDTO;
 import com.br.edu.infnet.leonardoLimaApi.entities.Address;
 import com.br.edu.infnet.leonardoLimaApi.mapper.AddressMapper;
+import com.br.edu.infnet.leonardoLimaApi.repositories.AddressRepository;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ApiViaCepException;
+import com.br.edu.infnet.leonardoLimaApi.services.exceptions.DatabaseException;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceNotFoundException;
 import com.br.edu.infnet.leonardoLimaApi.services.interfaces.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class AddressService implements CrudService<AddressDTO, Long> {
-
-    private Map<Long, Address> address = new ConcurrentHashMap<>();
-    private AtomicLong index = new AtomicLong(1);
 
     @Value("${spring.backend.host}")
     private String apiCep;
 
     private final WebClient webClient;
     private final AddressMapper addressMapper;
+    private final AddressRepository repository;
 
     @Autowired
-    public AddressService(WebClient webClient, AddressMapper addressMapper) {
+    public AddressService(WebClient webClient, AddressMapper addressMapper, AddressRepository repository) {
         this.webClient = webClient;
         this.addressMapper = addressMapper;
+        this.repository = repository;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<AddressDTO> findAll() {
-        return address.values().stream().map(addressMapper::entityToDto).toList();
+        return repository.findAll().stream().map(addressMapper::entityToDto).toList();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public AddressDTO findById(Long id) {
-        Address entity = address.get(id);
-        if (Objects.nonNull(entity)) {
-            return addressMapper.entityToDto(entity);
-        }
-        throw new ResourceNotFoundException("Endereço com o id = " + id + " não encontrada!");
+        return addressMapper.entityToDto(repository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Endereço com o id = " + id + " não encontrada!")));
     }
+
 
     @Override
     public AddressDTO insert(AddressDTO dto) {
-        AddressDTO addDto = null;
-        if (Objects.nonNull(dto.getCep())) {
-            addDto = findAddressByCep(dto.getCep());
-            addDto.setId(index.getAndIncrement());
-            addDto.setClientId(dto.getClientId());
-        }
-
-        Address entity = addressMapper.dtoToEntity(addDto);
-        address.put(entity.getId(), entity);
-        return addressMapper.entityToDto(entity);
+        Address address = findAddressByCep(dto.getCep());
+        return addressMapper.entityToDto(address);
     }
 
+    @Transactional
     @Override
     public AddressDTO update(Long id, AddressDTO dto) {
-        AddressDTO addDto = findById(id);
-        address.remove(id);
-        if (Objects.nonNull(dto.getCep())) {
-            addDto = findAddressByCep(dto.getCep());
-            addDto.setId(id);
-            addDto.setClientId(addDto.getClientId());
-        }
-
-        Address entity = addressMapper.dtoToEntity(addDto);
-        address.put(id, entity);
-        return addressMapper.entityToDto(addressMapper.dtoToEntity(addDto));
+        this.findById(id);
+        Address address = findAddressByCep(dto.getCep());
+        address.setId(id);
+        return addressMapper.entityToDto(address);
     }
 
+    @Transactional
     @Override
     public void delete(Long id) {
-        address.remove(id);
+        this.findById(id);
+        try {
+            repository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Violação de integridade no banco de dados");
+        }
     }
 
-    public AddressDTO findAddressByCep(String cep) {
+    public Address findAddressByCep(String cep) {
         return webClient.get()
                 .uri(apiCep + "/{cep}/json", cep)
                 .retrieve()
-                .bodyToMono(AddressDTO.class)
+                .bodyToMono(Address.class)
                 .timeout(Duration.ofSeconds(5))
-                .onErrorResume(ex -> {
-                    Mono.error(new ApiViaCepException("Erro ao buscar o cep " + cep + " no site ViaCep!"));
-                    return Mono.just(new AddressDTO());
-                }).block();
+                .onErrorResume(ex -> Mono.error(new ApiViaCepException("Erro ao buscar o CEP " + cep + " no site ViaCep!")))
+                .block();
     }
 }

@@ -1,5 +1,6 @@
 package com.br.edu.infnet.leonardoLimaApi.dtos;
 
+import com.br.edu.infnet.leonardoLimaApi.entities.Address;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
