@@ -2,6 +2,7 @@ package com.br.edu.infnet.leonardoLimaApi.controllers;
 
 import com.br.edu.infnet.leonardoLimaApi.dtos.ClientDTO;
 import com.br.edu.infnet.leonardoLimaApi.services.ClientService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class ClientController {
 
     @PostMapping
     public ResponseEntity<ClientDTO> insert(@RequestParam(name = "update", defaultValue = "false") boolean update,
-                                            @RequestBody ClientDTO dto) {
+                                            @Valid @RequestBody ClientDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createClientAndAddress(dto, update));
     }
 

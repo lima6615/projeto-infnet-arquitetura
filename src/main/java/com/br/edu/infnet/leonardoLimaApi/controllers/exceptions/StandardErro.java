@@ -1,4 +1,4 @@
-package com.br.edu.infnet.leonardoLimaApi.dtos;
+package com.br.edu.infnet.leonardoLimaApi.controllers.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @AllArgsConstructor
-public class StandardErroDTO {
+public class StandardErro {
 
     private Instant timestamp;
     private Integer status;
