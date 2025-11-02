@@ -30,9 +30,19 @@ public class EnterpriseController {
         return ResponseEntity.ok().body(service.findById(id));
     }
 
+    @GetMapping(value = "/cnpj")
+    public ResponseEntity<EnterpriseDTO> findEnterpriseByCnpj(@RequestParam(name = "cnpj") String cnpj) {
+        return ResponseEntity.ok().body(service.findEnterprisesByCnpj(cnpj));
+    }
+
     @PostMapping
     public ResponseEntity<EnterpriseDTO> insert(@RequestBody EnterpriseDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.insert(dto));
+    }
+
+    @PatchMapping(value = "/{id}/status")
+    public ResponseEntity<EnterpriseDTO> enableAndDisable(@PathVariable Long id, @RequestParam(name = "status") boolean status) {
+        return ResponseEntity.ok().body(service.enableAndDisable(id, status));
     }
 
     @PutMapping(value = "/{id}")

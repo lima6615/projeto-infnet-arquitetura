@@ -32,6 +32,11 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createClientAndAddress(dto, update));
     }
 
+    @PatchMapping(value = "/{id}/status")
+    public ResponseEntity<ClientDTO> enableAndDisable(@PathVariable Long id, @RequestParam(name = "status") boolean status) {
+        return ResponseEntity.ok().body(service.enableAndDisable(id, status));
+    }
+
     @PutMapping(value = "/{id}")
     public ResponseEntity<ClientDTO> update(@RequestParam(name = "update", defaultValue = "false") boolean update,
                                             @PathVariable Long id,

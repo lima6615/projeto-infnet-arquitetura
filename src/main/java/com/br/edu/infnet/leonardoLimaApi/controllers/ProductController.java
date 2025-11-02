@@ -30,6 +30,11 @@ public class ProductController {
         return ResponseEntity.ok().body(service.findById(id));
     }
 
+    @GetMapping(value = "/list")
+    public ResponseEntity<List<ProductDTO>> findProductsByCategory(@RequestParam(name = "catName") String categoryName) {
+        return ResponseEntity.ok().body(service.findByCategory(categoryName));
+    }
+
     @PostMapping
     public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.insert(dto));

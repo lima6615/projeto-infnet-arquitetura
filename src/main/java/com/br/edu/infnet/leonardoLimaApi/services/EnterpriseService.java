@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EnterpriseService implements CrudService<EnterpriseDTO, Long> {
@@ -42,12 +43,30 @@ public class EnterpriseService implements CrudService<EnterpriseDTO, Long> {
                 new ResourceNotFoundException("Empresa com o id= " + id + " não encontrado!")));
     }
 
+    @Transactional(readOnly = true)
+    public EnterpriseDTO findEnterprisesByCnpj(String cnpj) {
+        Optional<Enterprise> entity = repository.findByCnpj(cnpj);
+        if (entity.isPresent()) {
+            return enterpriseMapper.entityToDto(entity.get());
+        } else {
+            throw new ResourceNotFoundException("Empresa não encontrado com o CNPJ=" + cnpj + " informado!");
+        }
+    }
+
     @Transactional
     @Override
     public EnterpriseDTO insert(EnterpriseDTO dto) {
         Enterprise enterprise = enterpriseMapper.dtoToEntity(dto);
         enterprise.setPassword(encoder.encode(dto.getPassword()));
         return enterpriseMapper.entityToDto(repository.save(enterprise));
+    }
+
+    @Transactional
+    public EnterpriseDTO enableAndDisable(Long id, boolean status) {
+        EnterpriseDTO enterpriseDTO = this.findById(id);
+        enterpriseDTO.setInAtivo(status);
+        Enterprise entity = repository.save(enterpriseMapper.dtoToEntity(enterpriseDTO));
+        return enterpriseMapper.entityToDto(entity);
     }
 
     @Transactional

@@ -4,6 +4,7 @@ import com.br.edu.infnet.leonardoLimaApi.dtos.ProductDTO;
 import com.br.edu.infnet.leonardoLimaApi.entities.Product;
 import com.br.edu.infnet.leonardoLimaApi.mapper.CategotyMapper;
 import com.br.edu.infnet.leonardoLimaApi.mapper.ProductMapper;
+import com.br.edu.infnet.leonardoLimaApi.repositories.CategoryRepository;
 import com.br.edu.infnet.leonardoLimaApi.repositories.ProductRepository;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.DatabaseException;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceAlreadyExistsException;
@@ -21,13 +22,15 @@ public class ProductService implements CrudService<ProductDTO, Long> {
 
     private final ProductRepository repository;
     private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
     private final CategotyMapper categotyMapper;
 
     @Autowired
-    public ProductService(ProductRepository repository, CategoryService categoryService, ProductMapper productMapper, CategotyMapper categotyMapper) {
+    public ProductService(ProductRepository repository, CategoryService categoryService, CategoryRepository categoryRepository, ProductMapper productMapper, CategotyMapper categotyMapper) {
         this.repository = repository;
         this.categoryService = categoryService;
+        this.categoryRepository = categoryRepository;
         this.productMapper = productMapper;
         this.categotyMapper = categotyMapper;
     }
@@ -43,6 +46,14 @@ public class ProductService implements CrudService<ProductDTO, Long> {
     public ProductDTO findById(Long id) {
         return productMapper.entityToDto(repository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Produto com id " + id + " não encontrado.")));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductDTO> findByCategory(String categoryName) {
+        if (categoryRepository.findByName(categoryName).isPresent()) {
+            return repository.findAllByCategory(categoryName).stream().map(productMapper::entityToDto).toList();
+        }
+        throw new ResourceNotFoundException("Produto não encontrado para a categoria=" + categoryName + " informada!");
     }
 
     @Transactional

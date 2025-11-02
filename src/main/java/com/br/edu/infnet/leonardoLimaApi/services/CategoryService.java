@@ -40,6 +40,11 @@ public class CategoryService implements CrudService<CategoryDTO, Long> {
                 new ResourceNotFoundException("Categoria com id " + id + " não encontrado.")));
     }
 
+    @Transactional(readOnly = true)
+    public List<CategoryDTO> findActiveCategories() {
+        return repository.findCategoriesByInActiveIsTrue().stream().map(categotyMapper::entityToDto).toList();
+    }
+
     @Transactional
     @Override
     public CategoryDTO insert(CategoryDTO dto) {

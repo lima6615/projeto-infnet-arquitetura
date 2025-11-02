@@ -45,4 +45,9 @@ public class CategoryController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping(value = "/actives")
+    public ResponseEntity<List<CategoryDTO>> findActiveCategories() {
+        return ResponseEntity.ok().body(service.findActiveCategories());
+    }
 }

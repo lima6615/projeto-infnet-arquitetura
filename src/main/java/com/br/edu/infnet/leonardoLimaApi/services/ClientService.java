@@ -79,6 +79,14 @@ public class ClientService implements CrudService<ClientDTO, Long> {
     }
 
     @Transactional
+    public ClientDTO enableAndDisable(Long id, boolean status) {
+        ClientDTO clientDTO = this.findById(id);
+        clientDTO.setInAtivo(status);
+        Client entity = repository.save(clientMapper.dtoToEntity(clientDTO));
+        return clientMapper.entityToDto(entity);
+    }
+
+    @Transactional
     @Override
     public void delete(Long id) {
         this.findById(id);
