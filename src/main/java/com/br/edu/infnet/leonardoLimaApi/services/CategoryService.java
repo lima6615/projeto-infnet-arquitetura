@@ -4,12 +4,10 @@ import com.br.edu.infnet.leonardoLimaApi.dtos.CategoryDTO;
 import com.br.edu.infnet.leonardoLimaApi.entities.Category;
 import com.br.edu.infnet.leonardoLimaApi.mapper.CategotyMapper;
 import com.br.edu.infnet.leonardoLimaApi.repositories.CategoryRepository;
-import com.br.edu.infnet.leonardoLimaApi.services.exceptions.DatabaseException;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceAlreadyExistsException;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceNotFoundException;
 import com.br.edu.infnet.leonardoLimaApi.services.interfaces.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,10 +68,6 @@ public class CategoryService implements CrudService<CategoryDTO, Long> {
     @Override
     public void delete(Long id) {
         this.findById(id);
-        try {
-            repository.deleteById(id);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException("Violação de integridade no banco de dados");
-        }
+        repository.deleteById(id);
     }
 }

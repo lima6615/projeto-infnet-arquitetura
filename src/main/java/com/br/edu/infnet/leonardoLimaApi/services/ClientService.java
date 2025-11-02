@@ -7,11 +7,9 @@ import com.br.edu.infnet.leonardoLimaApi.entities.Client;
 import com.br.edu.infnet.leonardoLimaApi.mapper.AddressMapper;
 import com.br.edu.infnet.leonardoLimaApi.mapper.ClientMapper;
 import com.br.edu.infnet.leonardoLimaApi.repositories.ClientRepository;
-import com.br.edu.infnet.leonardoLimaApi.services.exceptions.DatabaseException;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceNotFoundException;
 import com.br.edu.infnet.leonardoLimaApi.services.interfaces.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,11 +88,7 @@ public class ClientService implements CrudService<ClientDTO, Long> {
     @Override
     public void delete(Long id) {
         this.findById(id);
-        try {
-            repository.deleteById(id);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException("Violação de integridade no banco de dados");
-        }
+        repository.deleteById(id);
     }
 
     private Client getAddressDTO(ClientDTO dto, Client client, boolean update) {

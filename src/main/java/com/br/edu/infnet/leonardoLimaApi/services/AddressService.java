@@ -5,12 +5,10 @@ import com.br.edu.infnet.leonardoLimaApi.entities.Address;
 import com.br.edu.infnet.leonardoLimaApi.mapper.AddressMapper;
 import com.br.edu.infnet.leonardoLimaApi.repositories.AddressRepository;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ApiViaCepException;
-import com.br.edu.infnet.leonardoLimaApi.services.exceptions.DatabaseException;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceNotFoundException;
 import com.br.edu.infnet.leonardoLimaApi.services.interfaces.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -69,11 +67,7 @@ public class AddressService implements CrudService<AddressDTO, Long> {
     @Override
     public void delete(Long id) {
         this.findById(id);
-        try {
-            repository.deleteById(id);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException("Violação de integridade no banco de dados");
-        }
+        repository.deleteById(id);
     }
 
     public Address findAddressByCep(String cep) {

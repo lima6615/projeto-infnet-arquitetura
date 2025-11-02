@@ -2,6 +2,7 @@ package com.br.edu.infnet.leonardoLimaApi.controllers;
 
 import com.br.edu.infnet.leonardoLimaApi.dtos.ProductDTO;
 import com.br.edu.infnet.leonardoLimaApi.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +36,13 @@ public class ProductController {
         return ResponseEntity.ok().body(service.findByCategory(categoryName));
     }
 
+    @GetMapping(value = "/filters")
+    public ResponseEntity<List<ProductDTO>> filterProductByPrice(@RequestParam double priceStart, @RequestParam double priceEnd) {
+        return ResponseEntity.ok().body(service.filterProductByPrice(priceStart, priceEnd));
+    }
+
     @PostMapping
-    public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO dto) {
+    public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.insert(dto));
     }
 

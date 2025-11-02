@@ -4,11 +4,9 @@ import com.br.edu.infnet.leonardoLimaApi.dtos.EnterpriseDTO;
 import com.br.edu.infnet.leonardoLimaApi.entities.Enterprise;
 import com.br.edu.infnet.leonardoLimaApi.mapper.EnterpriseMapper;
 import com.br.edu.infnet.leonardoLimaApi.repositories.EnterpriseRepository;
-import com.br.edu.infnet.leonardoLimaApi.services.exceptions.DatabaseException;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceNotFoundException;
 import com.br.edu.infnet.leonardoLimaApi.services.interfaces.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,9 +46,8 @@ public class EnterpriseService implements CrudService<EnterpriseDTO, Long> {
         Optional<Enterprise> entity = repository.findByCnpj(cnpj);
         if (entity.isPresent()) {
             return enterpriseMapper.entityToDto(entity.get());
-        } else {
-            throw new ResourceNotFoundException("Empresa não encontrado com o CNPJ=" + cnpj + " informado!");
         }
+        throw new ResourceNotFoundException("Empresa não encontrado com o CNPJ=" + cnpj + " informado!");
     }
 
     @Transactional
@@ -83,10 +80,6 @@ public class EnterpriseService implements CrudService<EnterpriseDTO, Long> {
     @Override
     public void delete(Long id) {
         this.findById(id);
-        try {
-            repository.deleteById(id);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException("Violação de integridade no banco de dados");
-        }
+        repository.deleteById(id);
     }
 }

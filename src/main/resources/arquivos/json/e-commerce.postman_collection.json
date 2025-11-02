@@ -123,6 +123,25 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "findAllActive",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/categories/actives",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"categories",
+								"actives"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -250,6 +269,60 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "findAllByCategory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/products/list?catName=Moda",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								"list"
+							],
+							"query": [
+								{
+									"key": "catName",
+									"value": "Moda"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "filters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/products/filters?priceStart=80&priceEnd=300",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								"filters"
+							],
+							"query": [
+								{
+									"key": "priceStart",
+									"value": "80"
+								},
+								{
+									"key": "priceEnd",
+									"value": "300"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -263,7 +336,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\" : \"Teste Usuario\",\n    \"email\" : \"teste@gmail.com\",\n    \"password\" : \"123456\",\n    \"inAtivo\" : \"true\",\n    \"phone\" : \"61984569836\", \n    \"cpf\" : \"22222222266\",\n    \"address\": {\n         \"cep\" : \"71881648\"\n    }\n}",
+							"raw": "{\n    \"name\" : \"\",\n    \"email\" : \"lima\",\n    \"password\" : \"\",\n    \"inAtivo\" : \"true\",\n    \"phone\" : \"61984569836\", \n    \"cpf\" : \"123.456.789-09\",\n    \"address\": {\n         \"cep\" : \"71881648\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -356,6 +429,41 @@
 								"v1",
 								"clients",
 								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "inActive",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/clients/3/status?status=true",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"clients",
+								"3",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "true"
+								}
 							]
 						}
 					},
@@ -483,6 +591,66 @@
 								"v1",
 								"enterprises",
 								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findByCnpj",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/enterprises/cnpj?cnpj=98732145000144",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"enterprises",
+								"cnpj"
+							],
+							"query": [
+								{
+									"key": "cnpj",
+									"value": "98732145000144"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "inActive",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/enterprises/2/status?status=false",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"enterprises",
+								"2",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "false"
+								}
 							]
 						}
 					},

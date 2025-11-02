@@ -6,12 +6,10 @@ import com.br.edu.infnet.leonardoLimaApi.mapper.CategotyMapper;
 import com.br.edu.infnet.leonardoLimaApi.mapper.ProductMapper;
 import com.br.edu.infnet.leonardoLimaApi.repositories.CategoryRepository;
 import com.br.edu.infnet.leonardoLimaApi.repositories.ProductRepository;
-import com.br.edu.infnet.leonardoLimaApi.services.exceptions.DatabaseException;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceAlreadyExistsException;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceNotFoundException;
 import com.br.edu.infnet.leonardoLimaApi.services.interfaces.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +54,11 @@ public class ProductService implements CrudService<ProductDTO, Long> {
         throw new ResourceNotFoundException("Produto não encontrado para a categoria=" + categoryName + " informada!");
     }
 
+    @Transactional(readOnly = true)
+    public List<ProductDTO> filterProductByPrice(double priceStart, double priceEnd) {
+        return repository.findByPriceBetween(priceStart, priceEnd).stream().map(productMapper::entityToDto).toList();
+    }
+
     @Transactional
     @Override
     public ProductDTO insert(ProductDTO dto) {
@@ -83,10 +86,6 @@ public class ProductService implements CrudService<ProductDTO, Long> {
     @Override
     public void delete(Long id) {
         this.findById(id);
-        try {
-            repository.deleteById(id);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException("Violação de integridade no banco de dados");
-        }
+        repository.deleteById(id);
     }
 }
