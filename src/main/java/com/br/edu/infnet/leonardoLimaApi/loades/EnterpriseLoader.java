@@ -1,7 +1,7 @@
 package com.br.edu.infnet.leonardoLimaApi.loades;
 
 import com.br.edu.infnet.leonardoLimaApi.dtos.EnterpriseDTO;
-import com.br.edu.infnet.leonardoLimaApi.services.EnterpriseService;
+import com.br.edu.infnet.leonardoLimaApi.services.interfaces.EnterpriseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;

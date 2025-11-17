@@ -2,7 +2,7 @@ package com.br.edu.infnet.leonardoLimaApi.loades;
 
 import com.br.edu.infnet.leonardoLimaApi.dtos.AddressDTO;
 import com.br.edu.infnet.leonardoLimaApi.dtos.ClientDTO;
-import com.br.edu.infnet.leonardoLimaApi.services.ClientService;
+import com.br.edu.infnet.leonardoLimaApi.services.interfaces.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;

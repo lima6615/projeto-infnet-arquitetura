@@ -6,7 +6,7 @@ import com.br.edu.infnet.leonardoLimaApi.mapper.CategotyMapper;
 import com.br.edu.infnet.leonardoLimaApi.repositories.CategoryRepository;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceAlreadyExistsException;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceNotFoundException;
-import com.br.edu.infnet.leonardoLimaApi.services.interfaces.CrudService;
+import com.br.edu.infnet.leonardoLimaApi.services.interfaces.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class CategoryService implements CrudService<CategoryDTO, Long> {
+public class CategoryServiceImpl implements CategoryService {
 
     private final CategotyMapper categotyMapper;
     private final CategoryRepository repository;
 
     @Autowired
-    public CategoryService(CategotyMapper categotyMapper, CategoryRepository repository) {
+    public CategoryServiceImpl(CategotyMapper categotyMapper, CategoryRepository repository) {
         this.categotyMapper = categotyMapper;
         this.repository = repository;
     }

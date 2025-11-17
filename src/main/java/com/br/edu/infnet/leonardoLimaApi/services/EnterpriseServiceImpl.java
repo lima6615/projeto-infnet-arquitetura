@@ -5,7 +5,7 @@ import com.br.edu.infnet.leonardoLimaApi.entities.Enterprise;
 import com.br.edu.infnet.leonardoLimaApi.mapper.EnterpriseMapper;
 import com.br.edu.infnet.leonardoLimaApi.repositories.EnterpriseRepository;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceNotFoundException;
-import com.br.edu.infnet.leonardoLimaApi.services.interfaces.CrudService;
+import com.br.edu.infnet.leonardoLimaApi.services.interfaces.EnterpriseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EnterpriseService implements CrudService<EnterpriseDTO, Long> {
+public class EnterpriseServiceImpl implements EnterpriseService {
 
     private final EnterpriseMapper enterpriseMapper;
     private final EnterpriseRepository repository;
     private final BCryptPasswordEncoder encoder;
 
     @Autowired
-    public EnterpriseService(EnterpriseMapper enterpriseMapper, EnterpriseRepository repository, BCryptPasswordEncoder encoder) {
+    public EnterpriseServiceImpl(EnterpriseMapper enterpriseMapper, EnterpriseRepository repository, BCryptPasswordEncoder encoder) {
         this.enterpriseMapper = enterpriseMapper;
         this.repository = repository;
         this.encoder = encoder;

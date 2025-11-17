@@ -1,7 +1,7 @@
 package com.br.edu.infnet.leonardoLimaApi.controllers;
 
 import com.br.edu.infnet.leonardoLimaApi.dtos.ClientDTO;
-import com.br.edu.infnet.leonardoLimaApi.services.ClientService;
+import com.br.edu.infnet.leonardoLimaApi.services.interfaces.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

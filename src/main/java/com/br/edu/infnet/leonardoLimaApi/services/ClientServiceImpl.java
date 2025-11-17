@@ -8,7 +8,7 @@ import com.br.edu.infnet.leonardoLimaApi.mapper.AddressMapper;
 import com.br.edu.infnet.leonardoLimaApi.mapper.ClientMapper;
 import com.br.edu.infnet.leonardoLimaApi.repositories.ClientRepository;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceNotFoundException;
-import com.br.edu.infnet.leonardoLimaApi.services.interfaces.CrudService;
+import com.br.edu.infnet.leonardoLimaApi.services.interfaces.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,17 +18,17 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class ClientService implements CrudService<ClientDTO, Long> {
+public class ClientServiceImpl implements ClientService {
 
     private final BCryptPasswordEncoder encoder;
     private final ClientMapper clientMapper;
     private final AddressMapper addressMapper;
-    private final AddressService addressService;
+    private final AddressServiceImpl addressService;
     private final ClientRepository repository;
 
 
     @Autowired
-    public ClientService(BCryptPasswordEncoder encoder, ClientMapper clientMapper, AddressService addressService, ClientRepository repository, AddressMapper addressMapper) {
+    public ClientServiceImpl(BCryptPasswordEncoder encoder, ClientMapper clientMapper, AddressServiceImpl addressService, ClientRepository repository, AddressMapper addressMapper) {
         this.encoder = encoder;
         this.clientMapper = clientMapper;
         this.addressService = addressService;
@@ -47,16 +47,6 @@ public class ClientService implements CrudService<ClientDTO, Long> {
     public ClientDTO findById(Long id) {
         return clientMapper.entityToDto(repository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Cliente com id= " + id + " não encontrado.")));
-    }
-
-    @Override
-    public ClientDTO insert(ClientDTO entity) {
-        return null;
-    }
-
-    @Override
-    public ClientDTO update(Long aLong, ClientDTO entity) {
-        return null;
     }
 
     @Transactional

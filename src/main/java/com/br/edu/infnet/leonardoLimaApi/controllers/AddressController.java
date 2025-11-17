@@ -1,7 +1,7 @@
 package com.br.edu.infnet.leonardoLimaApi.controllers;
 
 import com.br.edu.infnet.leonardoLimaApi.dtos.AddressDTO;
-import com.br.edu.infnet.leonardoLimaApi.services.AddressService;
+import com.br.edu.infnet.leonardoLimaApi.services.interfaces.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +12,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/v1/address")
-public class addressController {
+public class AddressController {
 
     private final AddressService addressService;
 
     @Autowired
-    public addressController(AddressService addressService) {
+    public AddressController(AddressService addressService) {
         this.addressService = addressService;
     }
 

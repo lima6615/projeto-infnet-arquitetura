@@ -1,7 +1,7 @@
 package com.br.edu.infnet.leonardoLimaApi.controllers;
 
 import com.br.edu.infnet.leonardoLimaApi.dtos.EnterpriseDTO;
-import com.br.edu.infnet.leonardoLimaApi.services.EnterpriseService;
+import com.br.edu.infnet.leonardoLimaApi.services.interfaces.EnterpriseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

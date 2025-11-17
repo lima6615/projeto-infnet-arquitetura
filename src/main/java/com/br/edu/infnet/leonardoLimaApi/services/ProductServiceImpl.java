@@ -8,7 +8,7 @@ import com.br.edu.infnet.leonardoLimaApi.repositories.CategoryRepository;
 import com.br.edu.infnet.leonardoLimaApi.repositories.ProductRepository;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceAlreadyExistsException;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceNotFoundException;
-import com.br.edu.infnet.leonardoLimaApi.services.interfaces.CrudService;
+import com.br.edu.infnet.leonardoLimaApi.services.interfaces.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,16 +16,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class ProductService implements CrudService<ProductDTO, Long> {
+public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository repository;
-    private final CategoryService categoryService;
+    private final CategoryServiceImpl categoryService;
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
     private final CategotyMapper categotyMapper;
 
     @Autowired
-    public ProductService(ProductRepository repository, CategoryService categoryService, CategoryRepository categoryRepository, ProductMapper productMapper, CategotyMapper categotyMapper) {
+    public ProductServiceImpl(ProductRepository repository, CategoryServiceImpl categoryService, CategoryRepository categoryRepository, ProductMapper productMapper, CategotyMapper categotyMapper) {
         this.repository = repository;
         this.categoryService = categoryService;
         this.categoryRepository = categoryRepository;

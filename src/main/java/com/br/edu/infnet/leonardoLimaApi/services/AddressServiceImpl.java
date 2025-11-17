@@ -6,7 +6,7 @@ import com.br.edu.infnet.leonardoLimaApi.mapper.AddressMapper;
 import com.br.edu.infnet.leonardoLimaApi.repositories.AddressRepository;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ApiViaCepException;
 import com.br.edu.infnet.leonardoLimaApi.services.exceptions.ResourceNotFoundException;
-import com.br.edu.infnet.leonardoLimaApi.services.interfaces.CrudService;
+import com.br.edu.infnet.leonardoLimaApi.services.interfaces.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.time.Duration;
 import java.util.List;
 
 @Service
-public class AddressService implements CrudService<AddressDTO, Long> {
+public class AddressServiceImpl implements AddressService {
 
     @Value("${spring.backend.host}")
     private String apiCep;
@@ -28,7 +28,7 @@ public class AddressService implements CrudService<AddressDTO, Long> {
     private final AddressRepository repository;
 
     @Autowired
-    public AddressService(WebClient webClient, AddressMapper addressMapper, AddressRepository repository) {
+    public AddressServiceImpl(WebClient webClient, AddressMapper addressMapper, AddressRepository repository) {
         this.webClient = webClient;
         this.addressMapper = addressMapper;
         this.repository = repository;
